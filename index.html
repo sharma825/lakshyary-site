@@ -1,20 +1,264 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lakshyary</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lakshyary | Portfolio & Pegboard</title>
+  
   <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; display: flex; height: 100vh; justify-content: center; align-items: center; margin: 0; background: #0f172a; color: #f8fafc; }
-    .card { text-align: center; padding: 2rem; max-width: 520px; }
-    h1 { font-size: 2.75rem; margin-bottom: 0.5rem; letter-spacing: -0.04em; }
-    p { color: #94a3b8; font-size: 1.15rem; line-height: 1.6; }
+    /* -------------------------------------------------------------
+       1. BASE & CHALKBOARD THEME
+       ------------------------------------------------------------- */
+    :root {
+      --chalk-white: #e2e8f0;
+      --chalk-dim: #94a3b8;
+      --board-bg: #1e2522; /* Dark slate green blackboard */
+      --card-bg: rgba(255, 255, 255, 0.04);
+      --chalk-border: rgba(240, 240, 240, 0.4);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      /* Replace the default pointer with our custom icon globally */
+      cursor: none; 
+    }
+
+    body {
+      background-color: var(--board-bg);
+      color: var(--chalk-white);
+      font-family: 'Courier New', Courier, monospace; /* Chalk-like monospace font */
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* -------------------------------------------------------------
+       2. CANVAS OVERLAY (CONTRAIL SYSTEM)
+       ------------------------------------------------------------- */
+    #contrail-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none; /* Allows clicks to pass right through to links */
+      z-index: 9998;
+    }
+
+    /* Custom Airplane Cursor Icon */
+    #plane-cursor {
+      position: fixed;
+      top: 0;
+      left: 0;
+      font-size: 20px;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      user-select: none;
+      transition: transform 0.05s linear;
+    }
+
+    /* -------------------------------------------------------------
+       3. HEADER & HERO SECTION
+       ------------------------------------------------------------- */
+    header {
+      /* Replace 'header-bg.jpg' with your background image path */
+      background: linear-gradient(rgba(30, 37, 34, 0.85), rgba(30, 37, 34, 0.95)), 
+                  url('header-bg.jpg') center/cover no-repeat;
+      padding: 4rem 2rem 3rem 2rem;
+      text-align: center;
+      border-bottom: 2px dashed var(--chalk-border);
+    }
+
+    header h1 {
+      font-size: 3rem;
+      letter-spacing: -1px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+      margin-bottom: 0.5rem;
+    }
+
+    header p {
+      color: var(--chalk-dim);
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* -------------------------------------------------------------
+       4. PEGBOARD / RESUME GRID
+       ------------------------------------------------------------- */
+    .container {
+      max-width: 1000px;
+      margin: 2rem auto;
+      padding: 0 1.5rem 4rem 1.5rem;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      margin: 2rem 0 1rem 0;
+      border-bottom: 1px solid var(--chalk-border);
+      display: inline-block;
+      padding-bottom: 4px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    /* Pegboard / Chalk Slate Card */
+    .card {
+      background: var(--card-bg);
+      border: 1px dashed var(--chalk-border);
+      border-radius: 4px;
+      padding: 1.5rem;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      transition: all 0.2s ease-in-out;
+      box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Chalkboard Sketch Hover Effect */
+    .card:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-style: solid;
+      border-color: #ffffff;
+      transform: translateY(-3px);
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.2);
+    }
+
+    .card h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .card p {
+      font-size: 0.95rem;
+      color: var(--chalk-dim);
+      line-height: 1.4;
+    }
+
+    .card .tag {
+      display: inline-block;
+      margin-top: 1rem;
+      font-size: 0.75rem;
+      border: 1px solid var(--chalk-dim);
+      padding: 2px 6px;
+      border-radius: 2px;
+    }
   </style>
 </head>
 <body>
-  <div class="card">
+
+  <canvas id="contrail-canvas"></canvas>
+
+  <div id="plane-cursor">✈️</div>
+
+  <header>
     <h1>Lakshyary</h1>
-    <p>Aim bigger. Jai Hanuman.</p>
-  </div>
+    <p>Aim bigger. Aviation strategy, network optimization, and analytical systems.</p>
+  </header>
+
+  <main class="container">
+    <div class="section-title">// ACTIVE INITIATIVES</div>
+    <div class="grid">
+      
+      <a href="#" class="card">
+        <h3>Network Compression Engine</h3>
+        <p>PySpark & Spark SQL pipeline compressing large-scale flight rotation and block schedules.</p>
+        <span class="tag">Aviation Analytics</span>
+      </a>
+
+      <a href="#" class="card">
+        <h3>EdTech Platform</h3>
+        <p>Curated curriculum focused on quantitative network modeling and industry-scale forecasting.</p>
+        <span class="tag">EdTech</span>
+      </a>
+
+      <a href="#" class="card">
+        <h3>Investment Thesis</h3>
+        <p>Structural tracking of high-capex nuclear supply chain infrastructure and small-cap allocations.</p>
+        <span class="tag">Strategy</span>
+      </a>
+
+    </div>
+  </main>
+
+  <script>
+    const canvas = document.getElementById('contrail-canvas');
+    const ctx = canvas.getContext('2d');
+    const plane = document.getElementById('plane-cursor');
+
+    // Ensure the canvas matches viewport dimensions
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    const particles = [];
+    let lastX = 0;
+    let lastY = 0;
+
+    // Listen to cursor movements
+    window.addEventListener('mousemove', (e) => {
+      const x = e.clientX;
+      const y = e.clientY;
+
+      // 1. Calculate direction vector for aircraft heading
+      const deltaX = x - lastX;
+      const deltaY = y - lastY;
+      const angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
+
+      // Rotate airplane to match heading (adding 45 deg base offset for the ✈️ glyph)
+      plane.style.transform = `translate(${x}px, ${y}px) rotate(${angle + 45}deg)`;
+
+      // 2. Emit contrail particles if movement occurred
+      if (Math.hypot(deltaX, deltaY) > 2) {
+        particles.push({
+          x: x,
+          y: y,
+          size: Math.random() * 3 + 2,   // Particle radius
+          alpha: 0.6,                    // Initial smoke opacity
+          decay: 0.015                   // Rate at which smoke dissipates
+        });
+      }
+
+      lastX = x;
+      lastY = y;
+    });
+
+    // Animation loop to render and disperse contrails
+    function animateContrails() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        p.alpha -= p.decay;
+        p.size += 0.15; // Smoke expands as it ages
+
+        // Draw smoke particle (chalk-white with soft dissipation)
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(226, 232, 240, ${Math.max(p.alpha, 0)})`;
+        ctx.fill();
+
+        // Cleanup dead particles
+        if (p.alpha <= 0) {
+          particles.splice(i, 1);
+          i--;
+        }
+      }
+
+      requestAnimationFrame(animateContrails);
+    }
+
+    animateContrails();
+  </script>
 </body>
 </html>
